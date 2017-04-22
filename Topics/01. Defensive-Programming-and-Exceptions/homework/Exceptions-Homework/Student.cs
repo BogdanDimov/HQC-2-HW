@@ -4,22 +4,21 @@ using System.Collections.Generic;
 
 public class Student
 {
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
-    public IList<Exam> Exams { get; set; }
-
-    public Student(string firstName, string lastName, IList<Exam> exams = null)
+    public Student(string firstName, string lastName, IList<Exam> exams)
     {
-        if (firstName == null)
+        if (string.IsNullOrEmpty(firstName))
         {
-            Console.WriteLine("Invalid first name!");
-            Environment.Exit(0);
+            throw new ArgumentNullException("Invalid first name!");
         }
 
-        if (lastName == null)
+        if (string.IsNullOrEmpty(lastName))
         {
-            Console.WriteLine("Invalid first name!");
-            Environment.Exit(0);
+            throw new ArgumentNullException("Invalid last name!");
+        }
+
+        if (exams == null || exams.Count == 0)
+        {
+            throw new ArgumentNullException("Exams cannot be null or empty!");
         }
 
         this.FirstName = firstName;
@@ -27,23 +26,19 @@ public class Student
         this.Exams = exams;
     }
 
+    public string FirstName { get; set; }
+
+    public string LastName { get; set; }
+
+    public IList<Exam> Exams { get; set; }
+
     public IList<ExamResult> CheckExams()
     {
-        if (this.Exams == null)
-        {
-            throw new Exception("Wow! Error happened!!!");
-        }
+        var results = new List<ExamResult>();
 
-        if (this.Exams.Count == 0)
-        {
-            Console.WriteLine("The student has no exams!");
-            return null;
-        }
-
-        IList<ExamResult> results = new List<ExamResult>();
         for (int i = 0; i < this.Exams.Count; i++)
         {
-            results.Add(this.Exams[i].Check());
+            results.Add(this.Exams[i].CalculateResult());
         }
 
         return results;
@@ -51,27 +46,17 @@ public class Student
 
     public double CalcAverageExamResultInPercents()
     {
-        if (this.Exams == null)
-        {
-            // Cannot calculate average on missing exams
-            throw new Exception();
-        }
-
-        if (this.Exams.Count == 0)
-        {
-            // No exams --> return -1;
-            return -1;
-        }
-
+        var examResults = CheckExams();
         double[] examScore = new double[this.Exams.Count];
-        IList<ExamResult> examResults = CheckExams();
+
         for (int i = 0; i < examResults.Count; i++)
         {
-            examScore[i] = 
-                ((double)examResults[i].Grade - examResults[i].MinGrade) / 
+            examScore[i] =
+                ((double)examResults[i].Grade - examResults[i].MinGrade) /
                 (examResults[i].MaxGrade - examResults[i].MinGrade);
         }
 
-        return examScore.Average();
+        var avg = examScore.Average();
+        return avg;
     }
 }

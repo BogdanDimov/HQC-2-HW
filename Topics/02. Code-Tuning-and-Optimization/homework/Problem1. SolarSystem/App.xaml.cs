@@ -1,10 +1,9 @@
-﻿
-using System.Windows;
+﻿using System.Windows;
 
 namespace SolarSystem
 {
     /// <summary>
-    /// Interaction logic for App.xaml
+    ///     Interaction logic for App.xaml
     /// </summary>
     public partial class App : Application
     {

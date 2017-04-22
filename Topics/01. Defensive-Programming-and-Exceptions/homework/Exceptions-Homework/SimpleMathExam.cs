@@ -1,15 +1,12 @@
-﻿using System;
-
-public class SimpleMathExam : Exam
+﻿public class SimpleMathExam : Exam
 {
-    public int ProblemsSolved { get; private set; }
-
     public SimpleMathExam(int problemsSolved)
     {
         if (problemsSolved < 0)
         {
             problemsSolved = 0;
         }
+
         if (problemsSolved > 10)
         {
             problemsSolved = 10;
@@ -18,21 +15,24 @@ public class SimpleMathExam : Exam
         this.ProblemsSolved = problemsSolved;
     }
 
-    public override ExamResult Check()
+    public int ProblemsSolved { get; private set; }
+
+    public override ExamResult CalculateResult()
     {
-        if (ProblemsSolved == 0)
+        if (ProblemsSolved >= 0 || ProblemsSolved <= 3)
         {
             return new ExamResult(2, 2, 6, "Bad result: nothing done.");
         }
-        else if (ProblemsSolved == 1)
+        else if (ProblemsSolved >= 4 || ProblemsSolved <= 6)
         {
-            return new ExamResult(4, 2, 6, "Average result: nothing done.");
+            return new ExamResult(4, 2, 6, "Average result: only part of the problems are done.");
         }
-        else if (ProblemsSolved == 2)
+        else if (ProblemsSolved >= 7)
         {
-            return new ExamResult(6, 2, 6, "Average result: nothing done.");
+            return new ExamResult(6, 2, 6, "Excellent result: all or almost all problems done.");
         }
 
-        return new ExamResult(0, 0, 0, "Invalid number of problems solved!");
+        var examResult = new ExamResult(0, 0, 0, "Invalid number of problems solved!");
+        return examResult;
     }
 }

@@ -2,27 +2,21 @@
 
 public class CSharpExam : Exam
 {
-    public int Score { get; private set; }
-
     public CSharpExam(int score)
     {
-        if (score < 0)
+        if (score < 0 || score > 100)
         {
-            throw new NullReferenceException();
+            throw new ArgumentOutOfRangeException("Score must be in the range 0 - 100.");
         }
 
         this.Score = score;
     }
 
-    public override ExamResult Check()
+    public int Score { get; private set; }
+
+    public override ExamResult CalculateResult()
     {
-        if (Score < 0 || Score > 100)
-        {
-            throw new InvalidOperationException();
-        }
-        else
-        {
-            return new ExamResult(this.Score, 0, 100, "Exam results calculated by score.");
-        }
+        var result = new ExamResult(this.Score, 0, 100, "Exam results calculated by score.");
+        return result;
     }
 }

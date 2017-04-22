@@ -3,11 +3,12 @@
 namespace SolarSystem
 {
     /// <summary>
-	/// Interaction logic for MainWindow.xaml
+    ///     Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
-        OrbitsCalculator _data = new OrbitsCalculator();
+        private readonly OrbitsCalculator _data = new OrbitsCalculator();
+
         public MainWindow()
         {
             DataContext = _data;
