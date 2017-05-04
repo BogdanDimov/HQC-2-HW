@@ -1,5 +1,5 @@
 using System;
-using SchoolSystem.CLI.Contracts;
+using SchoolSystem.CLI.Core.Contracts;
 
 namespace SchoolSystem.CLI.Core.Providers
 {

@@ -55,21 +55,16 @@
         <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
       </ItemGroup>
     </When>
-    <Otherwise>
-      <ItemGroup>
-        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
-      </ItemGroup>
-    </Otherwise>
+    <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="Core\EngineTests.cs" />
     <Compile Include="Models\MarkTests.cs" />
     <Compile Include="Models\StudentTests.cs" />
     <Compile Include="Models\TeacherTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Core\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\SchoolSystem.CLI\SchoolSystem.CLI.csproj">
       <Project>{03feab64-c7d3-4e0d-a5a3-1a26b51c5eeb}</Project>

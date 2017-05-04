@@ -1,23 +1,25 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using SchoolSystem.CLI.Models.Enums;
+using SchoolSystem.CLI.Models.Abstractions;
 using SchoolSystem.CLI.Models.Contracts;
+using SchoolSystem.CLI.Models.Enums;
 
 namespace SchoolSystem.CLI.Models
 {
-    public class Student
+    public class Student : Person, IStudent
     {
         public Student(string first, string last, Grade grade)
+            : base(first, last)
         {
-            this.FirstName = first;
-            this.LastName = last;
+            if ((int)grade < 1 || (int)grade > 12)
+            {
+                throw new ArgumentException("Grade must be between 1 and 12.");
+            }
+
             this.Grade = grade;
             this.Marks = new List<IMark>();
         }
-
-        public string FirstName { get; }
-
-        public string LastName { get; }
 
         public Grade Grade { get; }
 

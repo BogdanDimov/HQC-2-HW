@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using Moq;
 using NUnit.Framework;
 using SchoolSystem.CLI.Models;
@@ -13,13 +13,11 @@ namespace SchoolSystem.Tests.Models
     public class TeacherTests
     {
         [Test]
-        public void TeacherConstructorAssignsCorrectValues()
+        public void TeacherCtorAssignsCorrectValues_WhenPassedValuesAreValid()
         {
             //arrange
             var first = "Pesho";
-
             var last = "Peshev";
-
             var subj = Subject.Math;
 
             //act
@@ -32,7 +30,7 @@ namespace SchoolSystem.Tests.Models
         }
 
         [Test]
-        public void AddMethodAddsMarkWhenInvoked()
+        public void AddMarkMethodsAddsMark_WhenValidMarkIsPassed()
         {
             //arrange
             var subj = Subject.Programming;
@@ -45,8 +43,35 @@ namespace SchoolSystem.Tests.Models
             teacher.AddMark(studentMock.Object, mark);
 
             //assert
-            Assert.AreEqual(subj, studentMock.Object.Marks.Single().Subject);
-            Assert.AreEqual(mark, studentMock.Object.Marks.Single().Value);
+            Assert.AreEqual(subj, studentMock.Object.Marks[0].Subject);
+            Assert.AreEqual(mark, studentMock.Object.Marks[0].Value);
+        }
+
+        [Test]
+        public void AddMarkMethodThrowsException_WhenStudentHasReachedTheMarksLimit()
+        {
+            //arrange
+            var sut = new Teacher("Pesho", "Peshev", Subject.Bulgarian);
+            var studentMock = new Mock<IStudent>();
+            var markMock = new Mock<IMark>();
+            var listOfMarks = Enumerable.Repeat(markMock.Object, 20)
+                .ToList();
+            studentMock.Setup(s => s.Marks).Returns(listOfMarks);
+
+            //act & assert
+            Assert.Throws<InvalidOperationException>(() => sut.AddMark(studentMock.Object, 4.5f));
+        }
+
+        [Test]
+        public void TeacherCtor_ShouldThrowException_WhenPassedFirstAndLastNameAreInvalid()
+        {
+            //arrange
+            var firstName = "U4itelq";
+            var lastName = "X";
+            var subject = Subject.Programming;
+
+            //act & assert
+            Assert.Throws<ArgumentException>(() => new Teacher(firstName, lastName, subject));
         }
     }
 }

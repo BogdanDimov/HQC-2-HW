@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using SchoolSystem.CLI.Core.Contracts;
 using SchoolSystem.CLI.Models;
-using SchoolSystem.CLI.Models.Contracts;
 using SchoolSystem.CLI.Models.Enums;
 
 namespace SchoolSystem.CLI.Core.Commands

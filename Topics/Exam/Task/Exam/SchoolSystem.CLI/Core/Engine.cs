@@ -2,34 +2,38 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using SchoolSystem.CLI.Contracts;
 using SchoolSystem.CLI.Core.Contracts;
-using SchoolSystem.CLI.Models;
 using SchoolSystem.CLI.Models.Contracts;
 
 namespace SchoolSystem.CLI.Core
 {
     public class Engine
     {
-        private readonly IReader readerProvider;
-        private readonly IWriter writerProvider;
+        private readonly IReader reader;
+        private readonly IWriter writer;
+        private readonly IParser parser;
 
-        // TODO: change param to IReader instead ConsoleReaderProvider
-        public Engine(IReader readerProvider, IWriter writerProvider/*, IParser parserProvider*/)
+        public Engine(IReader readerProvider, IWriter writerProvider, IParser parserProvider)
         {
             if (readerProvider == null)
             {
-                throw new ArgumentNullException(nameof(readerProvider));
+                throw new ArgumentNullException("Reader cannot be null or empty.");
             }
-
-            this.readerProvider = readerProvider;
 
             if (writerProvider == null)
             {
-                throw new ArgumentNullException(nameof(writerProvider));
+                throw new ArgumentNullException("Writer cannot be null or empty.");
             }
 
-            this.writerProvider = writerProvider;
+            if (parserProvider == null)
+            {
+                throw new ArgumentNullException("Parser cannot be null or empty.");
+            }
+
+            this.reader = readerProvider;
+            this.writer = writerProvider;
+            this.parser = parserProvider;
+
             Students = new Dictionary<int, IStudent>();
             Teachers = new Dictionary<int, ITeacher>();
         }
@@ -44,36 +48,33 @@ namespace SchoolSystem.CLI.Core
             {
                 try
                 {
-                    var commandString = this.readerProvider.ReadLine();
+                    var commandString = this.reader.ReadLine();
                     if (commandString == "End")
                     {
                         break;
                     }
 
-                    var commandName = commandString.Split(' ')[0];
-                    var assembly = this.GetType().GetTypeInfo().Assembly;
-                    var typeInfo = assembly.DefinedTypes
-                        .Where(type => type.ImplementedInterfaces.Any(i => i == typeof(ICommand)))
-                        .FirstOrDefault(type => type.Name.ToLower().Contains(commandName.ToLower()));
-
-                    if (typeInfo == null)
-                    {
-                        throw new ArgumentException("The passed command is not found!");
-                    }
-
-                    var parameters = commandString.Split(' ').ToList();
-                    parameters.RemoveAt(0);
-                    var command = Activator.CreateInstance(typeInfo) as ICommand;
-                    if (command != null)
-                    {
-                        this.writerProvider.WriteLine(command.Execute(parameters));
-                    }
+                    this.ProcessCommand(commandString);
                 }
                 catch (Exception ex)
                 {
-                    this.writerProvider.WriteLine(ex.Message);
+                    this.writer.WriteLine(ex.Message);
                 }
             }
+        }
+
+        private void ProcessCommand(string commandString)
+        {
+            if (string.IsNullOrEmpty(commandString))
+            {
+                throw new ArgumentNullException("Command cannot be null or empty.");
+            }
+
+            var command = this.parser.ParseCommand(commandString);
+            var parameters = this.parser.ParseParameters(commandString);
+
+            var executionResult = command.Execute(parameters);
+            this.writer.WriteLine(executionResult);
         }
     }
 }
